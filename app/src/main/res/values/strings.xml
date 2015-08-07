@@ -12,4 +12,6 @@
     <string name="incorrect_toast">Incorrect!</string>
     <string name="next_button">Next</string>
     <string name="previous_button">Prev</string>
+    <string name="next_button_content_description">Next Question</string>
+    <string name="previous_button_content_description">Previous Question</string>
 </resources>
