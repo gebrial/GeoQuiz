@@ -11,6 +11,9 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.HashSet;
+import java.util.Set;
+
 public class QuizActivity extends AppCompatActivity {
 
     private static final String TAG = "QuizActivity";
@@ -34,7 +37,7 @@ public class QuizActivity extends AppCompatActivity {
 
     private int mCurrentIndex = 0;
     private boolean mIsCheater = false;
-
+    private Set<Integer> mQuestionsCheated = new HashSet<>();
 
     private void updateQuestion(){
         int question = mQuestionBank[mCurrentIndex].getTextResId();
@@ -83,7 +86,7 @@ public class QuizActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 mCurrentIndex = (mCurrentIndex+1)%mQuestionBank.length;
-                mIsCheater = false;
+                mIsCheater = mQuestionsCheated.contains(mCurrentIndex);
                 updateQuestion();
             }
         });
@@ -114,7 +117,9 @@ public class QuizActivity extends AppCompatActivity {
             if(data == null)
                 return;
 
-            mIsCheater = CheatActivity.wasAnswerShown(data);
+            mIsCheater = CheatActivity.wasAnswerShown(data) || mQuestionsCheated.contains(mCurrentIndex);
+            if(mIsCheater)
+                mQuestionsCheated.add(mCurrentIndex);
         }
     }
 
