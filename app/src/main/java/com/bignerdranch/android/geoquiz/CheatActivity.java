@@ -22,6 +22,7 @@ public class CheatActivity extends AppCompatActivity {
     private boolean mAnswerIsTrue;
     private Button mShowAnswer;
     private TextView mAnswer;
+    private TextView mAPILevel;
 
     public static Intent newIntent(Context packageContext, boolean answerIsTrue){
         Intent i = new Intent(packageContext, CheatActivity.class);
@@ -76,6 +77,9 @@ public class CheatActivity extends AppCompatActivity {
                 }
             }
         });
+
+        mAPILevel = (TextView) findViewById(R.id.api_level_view);
+        mAPILevel.setText("API Level " + Build.VERSION.SDK_INT);
     }
 
     @Override
