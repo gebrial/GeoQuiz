@@ -15,6 +15,7 @@ public class QuizActivity extends AppCompatActivity {
 
     private static final String TAG = "QuizActivity";
     private static final String KEY_INDEX = "index";
+    private static final int REQUEST_CODE_CHEAT = 0;
 
     private Button mTrueButton;
     private Button mFalseButton;
@@ -31,6 +32,7 @@ public class QuizActivity extends AppCompatActivity {
     };
 
     private int mCurrentIndex = 0;
+    private boolean mIsCheater;
 
 
     private void updateQuestion(){
@@ -39,10 +41,15 @@ public class QuizActivity extends AppCompatActivity {
     }
 
     private void checkAnswer(boolean userPressedTrue){
-        if(userPressedTrue == mQuestionBank[mCurrentIndex].isAnswerTrue())
-            Toast.makeText(QuizActivity.this, R.string.correct_toast, Toast.LENGTH_SHORT).show();
+        int messageResId;
+        if(mIsCheater)
+            messageResId = R.string.judgement_toast;
+        else if (userPressedTrue == mQuestionBank[mCurrentIndex].isAnswerTrue())
+            messageResId = R.string.correct_toast;
         else
-            Toast.makeText(QuizActivity.this, R.string.incorrect_toast, Toast.LENGTH_SHORT).show();
+            messageResId = R.string.incorrect_toast;
+
+        Toast.makeText(QuizActivity.this, messageResId, Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -84,7 +91,7 @@ public class QuizActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent i = CheatActivity.newIntent(QuizActivity.this, mQuestionBank[mCurrentIndex].isAnswerTrue());
-                startActivity(i);
+                startActivityForResult(i, REQUEST_CODE_CHEAT);
             }
         });
 
@@ -92,6 +99,19 @@ public class QuizActivity extends AppCompatActivity {
             mCurrentIndex = savedInstanceState.getInt(KEY_INDEX, 0);
 
         updateQuestion();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data){
+        if(resultCode != RESULT_OK)
+            return;
+
+        if(requestCode == REQUEST_CODE_CHEAT){
+            if(data == null)
+                return;
+
+            mIsCheater = CheatActivity.wasAnswerShown(data);
+        }
     }
 
     @Override
